@@ -33,7 +33,7 @@ GET http://localhost:3000/todos/5/
 ###
 
 //API 3
-GET http://localhost:3000/agenda/?date=2021-12-12
+GET http://localhost:3000/agenda/?date=2021-02-22/
 ###
 
 //API 4
@@ -100,5 +100,4 @@ Content-Type: application/json
 //Scenario 5 
 DELETE http://localhost:3000/todos/4/
 ###
-
 

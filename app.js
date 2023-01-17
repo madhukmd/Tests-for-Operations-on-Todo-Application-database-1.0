@@ -45,7 +45,7 @@ app.get("/todos/", async (request, response) => {
   if (keys[0] === "search_q") {
     const getSearchQuery = `SELECT * FROM todo WHERE todo LIKE '%${search_q}%'`;
     const getSearch = await db.all(getSearchQuery);
-    response.send(getSearch);
+    response.send(getSearch.map((list) => convertFunction(list)));
   } else if (keys.length === 1) {
     const value = request.query[keys[0]];
     const getStatusAllQueries = `SELECT * FROM todo WHERE ${keys[0]} = '${value}'`;
@@ -80,8 +80,8 @@ app.get("/todos/", async (request, response) => {
 app.get("/todos/:todoId/", async (request, response) => {
   const { todoId } = request.params;
   const getTodoIdQuery = `SELECT * FROM todo WHERE id = ${todoId}`;
-  const getId = await db.get(getTodoIdQuery);
-  response.send(getId);
+  const gettodosId = await db.get(getTodoIdQuery);
+  response.send(convertFunction(gettodosId));
 });
 
 //API 3
@@ -91,9 +91,10 @@ app.get("/agenda/", async (request, response) => {
 
   if (isValidDate === true) {
     let newDate = format(new Date(date), "yyyy-MM-dd");
+
     const getDueDateQuery = `SELECT * FROM todo WHERE due_date = '${newDate}';`;
-    const getId = await db.get(getDueDateQuery);
-    response.send(getId);
+    const getDateId = await db.all(getDueDateQuery);
+    response.send(getDateId.map((list) => convertFunction(list)));
   } else {
     response.status(400);
     response.send(`Invalid Due Date`);
@@ -116,15 +117,15 @@ app.post("/todos/", async (request, response) => {
   //   console.log(checkCategory);
   if (checkStatus && checkPriority && checkCategory && isValidDate) {
     const createTodoQuery = `
-    INSERT INTO todo(id,todo,priority,status,category,due_date)
-    VALUES(
-        ${id},
-        '${todo}',
-        '${priority}',
-        '${status}',
-        '${category}',
-         '${dueDate}'
-    );`;
+      INSERT INTO todo(id,todo,priority,status,category,due_date)
+      VALUES(
+          ${id},
+          '${todo}',
+          '${priority}',
+          '${status}',
+          '${category}',
+           '${dueDate}'
+      );`;
     const dbResponse = await db.run(createTodoQuery);
     response.send("Todo Successfully Added");
   } else {
