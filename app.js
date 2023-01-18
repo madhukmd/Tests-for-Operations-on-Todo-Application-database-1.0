@@ -116,6 +116,7 @@ app.post("/todos/", async (request, response) => {
 
   //   console.log(checkCategory);
   if (checkStatus && checkPriority && checkCategory && isValidDate) {
+    const date = format(new Date(dueDate), "yyyy-MM-dd");
     const createTodoQuery = `
       INSERT INTO todo(id,todo,priority,status,category,due_date)
       VALUES(
@@ -124,7 +125,7 @@ app.post("/todos/", async (request, response) => {
           '${priority}',
           '${status}',
           '${category}',
-           '${dueDate}'
+           '${date}'
       );`;
     const dbResponse = await db.run(createTodoQuery);
     response.send("Todo Successfully Added");
